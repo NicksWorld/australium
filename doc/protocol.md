@@ -53,16 +53,27 @@ Note: *This is only present in the very first fragment if the Message ID's MSB i
 
 ## Connection-based Header
 
-| Name        | Type   | Description                                               | Value    |
-| ----------- | ------ | --------------------------------------------------------- | -------- |
-| Message ID  | `long` | The message ID starting at 1. Unique for each connection. | *Varies* |
-| Response ID | `long` | The message ID this message is responding to(0 if none).  | *Varies* |
-| Flags       | `byte` | A bitwise field that we don't understand yet              | *Varies* |
-| State       | `byte` | Some kind of state that we also don't understand          | *Varies* |
+| Name        | Type    | Description                                               | Value    |
+| ----------- | ------- | --------------------------------------------------------- | -------- |
+| Message ID  | `long`  | The message ID starting at 1. Unique for each connection. | *Varies* |
+| Response ID | `long`  | The message ID this message is responding to(0 if none).  | *Varies* |
+| Flags       | `byte`  | A bitwise field that we don't understand yet              | *Varies* |
+| Checksum    | `short` | A really weird checksum                                   | *Varies* |
+| State       | `byte`  | Some kind of state that we also don't understand          | *Varies* |
 
 ### Flags
 
-TODO
+The following is ordered in the order they would appear in the packet.
+
+#### Flags & 0x20
+
+| Name      | Type   | Description   | Value    |
+| --------- | ------ | ------------- | -------- |
+| Challenge | `long` | The challenge | *Varies* |
+
+### Checksum
+
+This weird 16-bit checksum is the high 16 bits of the CRC32 checksum XORed by the low 16 bits of the same thing.
 
 ### State
 
