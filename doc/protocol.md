@@ -69,7 +69,7 @@ TODO
 
 Type: `7`
 
-Unused in TF2 (For now)
+TODO
 
 ## C2S_AUTHREQUEST1
 
@@ -93,20 +93,17 @@ OR (STEAM ONLY) (FROM A2S_GETCHALLENGE)
 
 | Name                  | Type        | Description                                                   | Value                                                                   |
 |-----------------------|-------------|---------------------------------------------------------------|-------------------------------------------------------------------------|
-| Magic Version         | `long`      | A number to check if the client is running the same version   | *Varies by Release*                                                     |
+| Magic Version         | `long`      | A number to check if the client is running the same version   | *Unknown*                                                               |
 | Challenge             | `long`      | Server to client challenge                                    | *Varies*                                                                |
 | Client Challenge      | `long`      | The client ot server challenge (`long` from A2S_GETCHALLENGE) | *Varies*                                                                |
 | Auth Protocol         | `long`      | The way the client authenticates with the server              | `0x02` for hashed CD key (Not allowed in multiplayer), `0x03` for Steam |
 | Steam2 Encryption Key | `short`     | No longer is used                                             | `0`                                                                     |
 | Steam ID              | `long long` | The users Steam ID converted to a u64                         | *Varies*                                                                |
-| SteamServer Secure    | `byte`      | If the server is secure (UNCERTAIN)                           | `true` or `false` as byte                                               |
-| Padding Bytes         | `string`    | Padding                                                       | `"000000"`                                                              |
+| SteamServer Secure    | `byte`      | If the server is secure (UNCERTAIN)                           | `0` or `1`                                                              |
+| Padding Bytes         | `string`    | Padding                                                       | `000000`                                                                |
 
 ### Generating the challenge number
-```rust
-let random: i32 = random(0, 0xFFFF) << 16 | random(0, 0xFFFF);
-let challenge: u64 = (ip_addr as usize << 32) + random;
-```
+A random number is generated and **must** be passed through a CRC32 hash before entering the field here
 
 ## C2M_CHECKMD5
 
@@ -118,30 +115,30 @@ TODO
 
 Type: `k`
 
-| Name               | Type     | Description                                      | Value                                                                   |
-|--------------------|----------|--------------------------------------------------|-------------------------------------------------------------------------|
-| Protocol Version   | `long`   | The protocol version of the client               | *Varies by Release*                                                     |
-| Auth Protocol      | `long`   | The way the client authenticates witht he server | `0x02` for hashed CD key (Not allowed in multiplayer), `0x03` for Steam |
-| Challenge Number   | `long`   | The challenge (TODO find more info)              |                                                                         |
-| Retry Challenge    | `long`   | TODO                                             |                                                                         |
-| Client Name        | `string` | The name of client (TODO)                        |                                                                         |
-| Password           | `string` | Contents of the password convar on the client    | *Varies* blank for no password                                          |
-| Product Version    | `string` | Product version from steam                       | Unknown                                                                 |
+| Name             | Type     | Description                                      | Value                                                                   |
+|------------------|----------|--------------------------------------------------|-------------------------------------------------------------------------|
+| Protocol Version | `long`   | The protocol version of the client               | Unknown                                                                 |
+| Auth Protocol    | `long`   | The way the client authenticates witht he server | `0x02` for hashed CD key (Not allowed in multiplayer), `0x03` for Steam |
+| Challenge Number | `long`   | The challenge (TODO find more info)              |                                                                         |
+| Retry Challenge  | `long`   | TODO                                             |                                                                         |
+| Client Name      | `string` | The name of client (TODO)                        |                                                                         |
+| Password         | `string` | Contents of the password convar on the client    | *Varies*                                                                |
+| Product Version  | `string` | Product version from steam                       | *Unknown*                                                               |
 
 ## S2C_CONNECTION
 
 Type: `B`
 
-| Name             | Type     | Description                                       | Value          |
-|------------------|----------|---------------------------------------------------|----------------|
-| Client Challenge | `long`   | The clients challenge (With extra verification??) | *Varies*       |
-| Padding          | `string` | Padding                                           | `"0000000000"` |
+| Name             | Type     | Description                                       | Value        |
+|------------------|----------|---------------------------------------------------|--------------|
+| Client Challenge | `long`   | The clients challenge (With extra verification??) | *Varies*     |
+| Padding          | `string` | Padding                                           | `0000000000` |
 
 OR
 
 | Name    | Type     | Description | Value              |
 |---------|----------|-------------|--------------------|
-| Padding | `string` | Padding???  | `"00000000000000"` |
+| Padding | `string` | Padding???  | `00000000000000` |
 
 ## S2C_CONNREJECT
 
@@ -209,7 +206,7 @@ Type: `q`
 | Name            | Type     | Description | Value        |
 |-----------------|----------|-------------|--------------|
 | Retry Challenge | `long`   | TODO        | TODO         |
-| Padding         | `string` | Padding     | "0000000000" |
+| Padding         | `string` | Padding     | `0000000000` |
 
 ## S2M_GETFILE
 
@@ -332,9 +329,9 @@ TODO
 
 Type: `R`
 
-| Name | Type     | Description   | Value    |
-|------|----------|---------------|----------|
-| Data | `string` | Single string | *Varies* |
+| Name | Type     | Description            | Value    |
+|------|----------|------------------------|----------|
+| Data | `string` | A single string to log | *Varies* |
 
 ## S2A_LOGSTRING2
 
@@ -342,7 +339,7 @@ Type: `S`
 
 | Name | Type     | Description                                 | Value    |
 |------|----------|---------------------------------------------|----------|
-| Data | `string` | Output of combining sv_logsecret + a string | *Varies* |
+| Data | `string` | Output of combining sv\_logsecret + a string (format!("{}{}", sv\_logsecret, string") | *Varies* |
 
 ## M2A_MASTERSERVERS
 
@@ -354,7 +351,7 @@ TODO
 
 Type: `X`
 
-Client ignores assuming it is from DOTA2
+TODO
 
 ## M2A_MOTD
 
@@ -389,8 +386,6 @@ Type: `Z`
 TODO
 
 ## A2S_PLAYER
-
-(Ignored by server?)
 
 Responds to: `S2C_CHALLENGE`
 
@@ -427,11 +422,9 @@ For each player, a player chunk follows.
 
 Type: `l`
 
-Used to redirect players + Ban?
-
 | Name    | Type     | Description | Value                      |
 |---------|----------|-------------|----------------------------|
-| Message | `string` | A message   | `"Banned by the server\n"` |
+| Message | `string` | A message   | `Banned by the server\n` |
 
 OR
 
@@ -451,11 +444,9 @@ TODO
 
 Type: `L`
 
-NOTE: Possibly incorrect
-
 | Name        | Type     | Description                                             | Value            |
 |-------------|----------|---------------------------------------------------------|------------------|
-| IP and port | `string` | The IP and port of the server to redirect the client to | `"x.x.x.x:port"` |
+| IP and port | `string` | The IP and port of the server to redirect the client to | `x.x.x.x:port` |
 
 ## A2S_RULES
 
@@ -508,18 +499,14 @@ Type: `W`
 
 Type: `f`
 
-NOTE: Possibly incorrect
-
 | Name                | Type       | Description                                | Value |
 |---------------------|------------|--------------------------------------------|-------|
-| Next Unique ID      | `int32`    | Next unique id, -1 for last batch          | ?     |
+| Next Unique ID      | `long`    | Next unique id, -1 for last batch          | ?     |
 | 6 byte IP/port list | `byte * 6` | A list of IP/port combinations for servers | ?     |
 
 ## M2A_SERVERS
 
 Type: `d`
-
-NOTE: Possibly incorrect
 
 | Name                | Type       | Description                                | Value |
 |---------------------|------------|--------------------------------------------|-------|
