@@ -91,16 +91,16 @@ Type: `A`
 
 OR (STEAM ONLY) (FROM A2S_GETCHALLENGE)
 
-| Name                  | Type        | Description                                                   | Value                                                                   |
-|-----------------------|-------------|---------------------------------------------------------------|-------------------------------------------------------------------------|
-| Magic Version         | `long`      | A number to check if the client is running the same version   | *Unknown*                                                               |
-| Challenge             | `long`      | Server to client challenge                                    | *Varies*                                                                |
-| Client Challenge      | `long`      | The client ot server challenge (`long` from A2S_GETCHALLENGE) | *Varies*                                                                |
-| Auth Protocol         | `long`      | The way the client authenticates with the server              | `0x02` for hashed CD key (Not allowed in multiplayer), `0x03` for Steam |
-| Steam2 Encryption Key | `short`     | No longer is used                                             | `0`                                                                     |
-| Steam ID              | `long long` | The users Steam ID converted to a u64                         | *Varies*                                                                |
-| SteamServer Secure    | `byte`      | If the server is secure (UNCERTAIN)                           | `0` or `1`                                                              |
-| Padding Bytes         | `string`    | Padding                                                       | `000000`                                                                |
+| Name                  | Type        | Description                                                   | Value                      |
+|-----------------------|-------------|---------------------------------------------------------------|----------------------------|
+| Magic Version         | `long`      | A number to check if the client is running the same version   | *Unknown*                  |
+| Challenge             | `long`      | Server to client challenge                                    | *Varies*                   |
+| Client Challenge      | `long`      | The client ot server challenge (`long` from A2S_GETCHALLENGE) | *Varies*                   |
+| Auth Protocol         | `long`      | The way the client authenticates with the server              | See below in Auth Protocol |
+| Steam2 Encryption Key | `short`     | No longer is used                                             | `0`                        |
+| Steam ID              | `long long` | The users Steam ID converted to a u64                         | *Varies*                   |
+| SteamServer Secure    | `byte`      | If the server is secure (UNCERTAIN)                           | `0` or `1`                 |
+| Padding Bytes         | `string`    | Padding                                                       | `000000`                   |
 
 ### Generating the challenge number
 A random number is generated and **must** be passed through a CRC32 hash before entering the field here
@@ -115,15 +115,15 @@ TODO
 
 Type: `k`
 
-| Name             | Type     | Description                                      | Value                                                                   |
-|------------------|----------|--------------------------------------------------|-------------------------------------------------------------------------|
-| Protocol Version | `long`   | The protocol version of the client               | Unknown                                                                 |
-| Auth Protocol    | `long`   | The way the client authenticates witht he server | `0x02` for hashed CD key (Not allowed in multiplayer), `0x03` for Steam |
-| Challenge Number | `long`   | The challenge (TODO find more info)              |                                                                         |
-| Retry Challenge  | `long`   | TODO                                             |                                                                         |
-| Client Name      | `string` | The name of client (TODO)                        |                                                                         |
-| Password         | `string` | Contents of the password convar on the client    | *Varies*                                                                |
-| Product Version  | `string` | Product version from steam                       | *Unknown*                                                               |
+| Name             | Type     | Description                                      | Value                      |
+|------------------|----------|--------------------------------------------------|----------------------------|
+| Protocol Version | `long`   | The protocol version of the client               | Unknown                    |
+| Auth Protocol    | `long`   | The way the client authenticates witht he server | See below in Auth Protocol |
+| Challenge Number | `long`   | The challenge (TODO find more info)              |                            |
+| Retry Challenge  | `long`   | TODO                                             |                            |
+| Client Name      | `string` | The name of client (TODO)                        |                            |
+| Password         | `string` | Contents of the password convar on the client    | *Varies*                   |
+| Product Version  | `string` | Product version from steam                       | *Unknown*                  |
 
 ## S2C_CONNECTION
 
@@ -511,3 +511,11 @@ Type: `d`
 | Name                | Type       | Description                                | Value |
 |---------------------|------------|--------------------------------------------|-------|
 | 6 byte IP/port list | `byte * 6` | A list of IP/port combinations for servers | ?     |
+
+## Extra Definitions
+### Auth Protocol
+
+| Value | Description                                                                                               |
+|-------|-----------------------------------------------------------------------------------------------------------|
+| 0x02  | Authentication is to be done with a hashed CD key (Orange Box?) and is not allowed for use in multiplayer |
+| 0x03  | Authentication is done through Steamauth                                                                  |
