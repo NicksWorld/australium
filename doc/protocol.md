@@ -27,10 +27,29 @@ All strings handled by the Source engine are zero-terminated UTF-8 strings.
 
 ## Connectionless Header
 
-| Name       | Type   | Description                  | Value        |
-| ---------- | ------ | ---------------------------- | ------------ |
-| Signatures | `long` | The signature of this header | `0xFFFFFFFF` |
-| Type       | `byte` | The type of message          | *Varies*     |
+| Name      | Type   | Description                  | Value        |
+| --------- | ------ | ---------------------------- | ------------ |
+| Signature | `long` | The signature of this header | `0xFFFFFFFF` |
+| Type      | `byte` | The type of message          | *Varies*     |
+
+## Fragmented Connectionless Header
+
+| Name       | Type    | Description                                                                      | Value        |
+| ---------- | ------- | -------------------------------------------------------------------------------- | ------------ |
+| Signature  | `long`  | The signature of this header                                                     | `0xFFFFFFFE` |
+| Message ID | `long`  | A unique message ID. If the MSB is set, the contents were compressed with bzip2. | *Varies*     |
+| Total      | `byte`  | The total number of response packets.                                            | *Varies*     |
+| Number     | `byte`  | The packet number out of the total(starts at 0).                                 | *Varies*     |
+| Size       | `short` | Maximum size of a packet before packet switching occurs(Usually 1248).           | *Varies*     |
+
+### Compressed header data
+
+Note: *This is only present in the very first fragment if the Message ID's MSB is set*
+
+| Name     | Type   | Description                                     | Value    |
+| -------- | ------ | ----------------------------------------------- | -------- |
+| Size     | `long` | Size of the complete decompressed response      | *Varies* |
+| Checksum | `long` | The CRC32 checksum of the decompressed response | *Varies* |
 
 ## Connection-based Header
 
