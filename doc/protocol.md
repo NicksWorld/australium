@@ -444,9 +444,9 @@ TODO
 
 Type: `L`
 
-| Name        | Type     | Description                                             | Value            |
-|-------------|----------|---------------------------------------------------------|------------------|
-| IP and port | `string` | The IP and port of the server to redirect the client to | `x.x.x.x:port` |
+| Name        | Type       | Description                                             | Value |
+|-------------|------------|---------------------------------------------------------|-------|
+| IP and port | `byte * 6` | The IP and port of the server to redirect the client to | ?     |
 
 ## A2S_RULES
 
