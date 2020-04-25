@@ -337,9 +337,9 @@ Type: `R`
 
 Type: `S`
 
-| Name | Type     | Description                                 | Value    |
-|------|----------|---------------------------------------------|----------|
-| Data | `string` | Output of combining sv\_logsecret + a string (format!("{}{}", sv\_logsecret, string") | *Varies* |
+| Name | Type     | Description                                                    | Value    |
+|------|----------|----------------------------------------------------------------|----------|
+| Data | `string` | The value of sv_logsecret concatenated with the message to log | *Varies* |
 
 ## M2A_MASTERSERVERS
 
