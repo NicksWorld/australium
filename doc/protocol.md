@@ -91,19 +91,22 @@ Type: `A`
 
 OR (STEAM ONLY) (FROM A2S_GETCHALLENGE)
 
-| Name                  | Type        | Description                                                   | Value                      |
-|-----------------------|-------------|---------------------------------------------------------------|----------------------------|
-| Magic Version         | `long`      | A number to check if the client is running the same version   | *Unknown*                  |
-| Challenge             | `long`      | Server to client challenge                                    | *Varies*                   |
-| Client Challenge      | `long`      | The client ot server challenge (`long` from A2S_GETCHALLENGE) | *Varies*                   |
-| Auth Protocol         | `long`      | The way the client authenticates with the server              | See below in Auth Protocol |
-| Steam2 Encryption Key | `short`     | No longer is used                                             | `0`                        |
-| Steam ID              | `long long` | The users Steam ID converted to a u64                         | *Varies*                   |
-| SteamServer Secure    | `byte`      | If the server is secure (UNCERTAIN)                           | `0` or `1`                 |
-| Padding Bytes         | `string`    | Padding                                                       | `000000`                   |
+| Name                  | Type        | Description                                                 | Value                       |
+| --------------------- | ----------- | ----------------------------------------------------------- | --------------------------- |
+| Magic Version         | `long`      | A number to check if the client is running the same version | *Unknown*                   |
+| Challenge             | `long`      | Server to client challenge                                  | *Varies*                    |
+| Client Challenge      | `long`      | The client to server challenge | *Varies*                   | *Varies*                    |
+| Auth Protocol         | `long`      | The way the client authenticates with the server            | *See Authentication Method* |
+| Steam2 Encryption Key | `short`     | No longer is used                                           | `0`                         |
+| Steam ID              | `long long` | The users Steam ID converted to a u64                       | *Varies*                    |
+| SteamServer Secure    | `byte`      | If the server is secure (UNCERTAIN)                         | `0` or `1`                  |
+| Padding Bytes         | `string`    | Padding                                                     | `000000`                    |
 
 ### Generating the challenge number
+
 A random number is generated and **must** be passed through a CRC32 hash before entering the field here
+
+*I'm not so sure about that, let me know if that's true or not* ~Bread
 
 ## C2M_CHECKMD5
 
@@ -115,30 +118,30 @@ TODO
 
 Type: `k`
 
-| Name             | Type     | Description                                      | Value                      |
-|------------------|----------|--------------------------------------------------|----------------------------|
-| Protocol Version | `long`   | The protocol version of the client               | Unknown                    |
-| Auth Protocol    | `long`   | The way the client authenticates witht he server | See below in Auth Protocol |
-| Challenge Number | `long`   | The challenge (TODO find more info)              |                            |
-| Retry Challenge  | `long`   | TODO                                             |                            |
-| Client Name      | `string` | The name of client (TODO)                        |                            |
-| Password         | `string` | Contents of the password convar on the client    | *Varies*                   |
-| Product Version  | `string` | Product version from steam                       | *Unknown*                  |
+| Name             | Type     | Description                                      | Value                       |
+| ---------------- | -------- | ------------------------------------------------ | --------------------------- |
+| Protocol Version | `long`   | The protocol version of the client               | *Unknown*                   |
+| Auth Protocol    | `long`   | The way the client authenticates with the server | *See Authentication Method* |
+| Challenge Number | `long`   | The challenge                                    | *Unknown*                   |
+| Retry Challenge  | `long`   | Unknown                                          | *Unknown*                   |
+| Client Name      | `string` | The name of client                               | *Varies*                    |
+| Password         | `string` | Contents of the password ConVar on the client    | *Varies*                    |
+| Product Version  | `string` | Product version from steam                       | *Unknown*                   |
 
 ## S2C_CONNECTION
 
 Type: `B`
 
 | Name             | Type     | Description                                       | Value        |
-|------------------|----------|---------------------------------------------------|--------------|
+| ---------------- | -------- | ------------------------------------------------- | ------------ |
 | Client Challenge | `long`   | The clients challenge (With extra verification??) | *Varies*     |
 | Padding          | `string` | Padding                                           | `0000000000` |
 
 OR
 
-| Name    | Type     | Description | Value              |
-|---------|----------|-------------|--------------------|
-| Padding | `string` | Padding???  | `00000000000000` |
+| Name    | Type     | Description | Value            |
+| ------- | -------- | ----------- | ---------------- |
+| Padding | `string` | Padding     | `00000000000000` |
 
 ## S2C_CONNREJECT
 
@@ -147,7 +150,7 @@ Type: `9`
 Sometimes caused by spoofing
 
 | Name             | Type     | Description                  | Value    |
-|------------------|----------|------------------------------|----------|
+| ---------------- | -------- | ---------------------------- | -------- |
 | Client Challenge | `long`   | The clients challenge        | *Varies* |
 | Reason           | `string` | The reason for the rejection | *Varies* |
 
@@ -204,8 +207,8 @@ TODO
 Type: `q`
 
 | Name            | Type     | Description | Value        |
-|-----------------|----------|-------------|--------------|
-| Retry Challenge | `long`   | TODO        | TODO         |
+| --------------- | -------- | ----------- | ------------ |
+| Retry Challenge | `long`   | Unknown     | *Unknown*    |
 | Padding         | `string` | Padding     | `0000000000` |
 
 ## S2M_GETFILE
@@ -330,7 +333,7 @@ TODO
 Type: `R`
 
 | Name | Type     | Description            | Value    |
-|------|----------|------------------------|----------|
+| ---- | -------- | ---------------------- | -------- |
 | Data | `string` | A single string to log | *Varies* |
 
 ## S2A_LOGSTRING2
@@ -338,7 +341,7 @@ Type: `R`
 Type: `S`
 
 | Name | Type     | Description                                                    | Value    |
-|------|----------|----------------------------------------------------------------|----------|
+| ---- | -------- | -------------------------------------------------------------- | -------- |
 | Data | `string` | The value of sv_logsecret concatenated with the message to log | *Varies* |
 
 ## M2A_MASTERSERVERS
@@ -422,8 +425,8 @@ For each player, a player chunk follows.
 
 Type: `l`
 
-| Name    | Type     | Description | Value                      |
-|---------|----------|-------------|----------------------------|
+| Name    | Type     | Description | Value                    |
+| ------- | -------- | ----------- | ------------------------ |
 | Message | `string` | A message   | `Banned by the server\n` |
 
 OR
@@ -431,7 +434,7 @@ OR
 NOTE: This appears to be used to send players to other servers
 
 | Name            | Type     | Description                   | Value    |
-|-----------------|----------|-------------------------------|----------|
+| --------------- | -------- | ----------------------------- | -------- |
 | Redirect Buffer | `string` | A IP address/port (UNCERTAIN) | *Varies* |
 
 ## A2S_RCON
@@ -444,9 +447,10 @@ TODO
 
 Type: `L`
 
-| Name        | Type       | Description                                             | Value |
-|-------------|------------|---------------------------------------------------------|-------|
-| IP and port | `byte * 6` | The IP and port of the server to redirect the client to | ?     |
+| Name        | Type    | Description                                  | Value    |
+| ----------- | ------- | -------------------------------------------- | -------- |
+| IP address  | `long`  | The IP address of the server to redirect to  | *Varies* |
+| Port number | `short` | The port number of the server to redirect to | *Varies* |
 
 ## A2S_RULES
 
@@ -499,23 +503,30 @@ Type: `W`
 
 Type: `f`
 
-| Name                | Type       | Description                                | Value |
-|---------------------|------------|--------------------------------------------|-------|
-| Next Unique ID      | `long`    | Next unique id, -1 for last batch          | ?     |
-| 6 byte IP/port list | `byte * 6` | A list of IP/port combinations for servers | ?     |
+| Name           | Type   | Description                       | Value    |
+| -------------- | ------ | --------------------------------- | -------- |
+| Next Unique ID | `long` | Next unique id, -1 for last batch | *Varies* |
+
+The remainder of the message is filled with the server chunks(see *Server Chunk* in Important Definitions below).
 
 ## M2A_SERVERS
 
 Type: `d`
 
-| Name                | Type       | Description                                | Value |
-|---------------------|------------|--------------------------------------------|-------|
-| 6 byte IP/port list | `byte * 6` | A list of IP/port combinations for servers | ?     |
+The entire message is filled with server chunks(see *Server Chunk* in Important Definitions below).
 
-## Extra Definitions
-### Auth Protocol
+# Important Definitions
+
+## Authentication Method
 
 | Value | Description                                                                                               |
-|-------|-----------------------------------------------------------------------------------------------------------|
+| ----- | --------------------------------------------------------------------------------------------------------- |
 | 0x02  | Authentication is to be done with a hashed CD key (Orange Box?) and is not allowed for use in multiplayer |
 | 0x03  | Authentication is done through Steamauth                                                                  |
+
+## Server Chunk
+
+| Name        | Type    | Description                   | Value    |
+| ----------- | ------- | ----------------------------- | -------- |
+| IP address  | `long`  | The IP address of the server  | *Varies* |
+| Port number | `short` | The port number of the server | *Varies* |
