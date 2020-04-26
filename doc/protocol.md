@@ -71,6 +71,26 @@ The following is ordered in the order they would appear in the packet.
 | --------- | ------ | ------------- | -------- |
 | Challenge | `long` | The challenge | *Varies* |
 
+#### Flags & 0x10
+
+*If the packet was chocked by the sender*
+
+#### Flags & 0x08
+
+*The packet is split into multiple messages*
+
+#### Flags & 0x04
+
+*The packet is encrypted*
+
+#### Flags & 0x02
+
+*The packet is compressed*
+
+#### Flags & 0x01
+
+*The packet contains subchannel stream data*
+
 ### Checksum
 
 This weird 16-bit checksum is the high 16 bits of the CRC32 checksum XORed by the low 16 bits of the same thing.
@@ -583,10 +603,11 @@ The entire message is filled with server chunks(see *Server Chunk* in Important 
 
 ## Authentication Method
 
-| Value | Description                                                                                               |
-| ----- | --------------------------------------------------------------------------------------------------------- |
-| 0x02  | Authentication is to be done with a hashed CD key (Orange Box?) and is not allowed for use in multiplayer |
-| 0x03  | Authentication is done through Steamauth                                                                  |
+| Value  | Description                                                                                               |
+| -----  | --------------------------------------------------------------------------------------------------------- |
+| `0x01` | Authentication is done by using a WON certificate                                                         |
+| `0x02` | Authentication is to be done with a hashed CD key (Orange Box?) and is not allowed for use in multiplayer |
+| `0x03` | Authentication is done through Steamauth                                                                  |
 
 ## Server Chunk
 
@@ -594,3 +615,268 @@ The entire message is filled with server chunks(see *Server Chunk* in Important 
 | ----------- | ------- | ----------------------------- | -------- |
 | IP address  | `long`  | The IP address of the server  | *Varies* |
 | Port number | `short` | The port number of the server | *Varies* |
+
+# Network Commands
+
+## NET_NOP
+
+Type: `0`
+
+NO-OP used for padding
+
+## NET_Disconnect
+
+Type: `1`
+
+The last message in a connection
+
+## NET_File
+
+Type: `2`
+
+File transmission message request or deny
+
+## NET_Tick
+
+Type: `3`
+
+Send last world tick
+
+## NET_StringCmd
+
+Type: `4`
+
+A string command
+
+## NET_SetConVar 
+
+Type: `5`
+
+Sends 1+ comment settings
+
+## NET_SignonState
+
+Type: `6`
+
+Signals current signon state
+
+## SVC_Print
+
+Type: `7`
+
+Prints text to the console
+
+## SVC_ServerInfo
+
+Type: `8`
+
+Message to client containing game and map info
+
+## SVC_SendTable
+
+Type: `9`
+
+Sends a description of the game class
+
+## SVC_ClassInfo
+
+Type: `10`
+
+Info about classes
+
+## SVC_SetPause
+
+Type: `11`
+
+Tells the client if the server is paused
+
+## SVC_CreateStringTable
+
+Type: `12`
+
+Initializes shared string tables
+
+## SVC_UpdateStringTable
+
+Type: `13`
+
+Updates a string table
+
+## SVC_VoiceInit
+
+Type: `14`
+
+Voice codec and quality information ???
+
+## SVC_VoiceData
+
+Type: `15`
+
+Voicestream data from the server
+
+## SVC_Sounds
+
+Type: `17`
+
+Plays a sound
+
+## SVC_SetView
+
+Type: `18`
+
+Sets entity at point of view
+
+## SVC_FixAngle
+
+Type: `19`
+
+Sets or corrects players viewangle
+
+## SVC_CrosshairAngle
+
+Type: `20`
+
+Adjusts crosshair in auto-aim to lock onto target
+
+## SVC_BSPDecal
+
+Type: `21`
+
+Adds a decal to the world
+
+## SVC_UserMessage
+
+Type: `23`
+
+Game-Specific message
+
+## SVC_EntityMessage
+
+Type: `24`
+
+A message about an entity
+
+## SVC_GameEvent
+
+Type: `25`
+
+Info about a global game event
+
+## SVC_PacketEntities
+
+Type: `26`
+
+Non-delta compressed entities
+
+## SVC_TempEntities
+
+Type: `27`
+
+Unreliable event object
+
+## SVC_Prefetch
+
+Type: `28`
+
+???
+
+## SVC_Menu
+
+Type: `29`
+
+Display a menu (Sourcemod-Style?)
+
+## SVC_GameEventList
+
+Type: `30`
+
+List of game events and fields
+
+## SVC_GetCvarValue
+
+Type: `31`
+
+Server request for a client cvar
+
+## SVC_CommandKeyValues
+
+Type: `32`
+
+???
+
+## SVC_SetPausedTimed
+
+Type: `33`
+
+Timed pause - Keeps demos intact
+
+## SVC_LASTMSG
+
+Type: `33`
+
+Last known server messages
+
+## CLC_ClientInfo
+
+Type: `8`
+
+Client info, CRC table
+
+## CLC_Move
+
+Type: `9`
+
+???
+
+## CLC_VoiceData
+
+Type: `10`
+
+Voice data from client
+## CLC_BaselineAck
+
+Type: `11`
+
+Client acknoledges a new sequence number
+
+## CLC_ListenEvents
+
+Type: `12`
+
+???
+
+## CLC_RespondCvarValue
+
+Type: `13`
+
+Response to SVC_GetCvarValue
+
+## CLC_FileCRCCheck
+
+Type: `14`
+
+Client sends a files CRC to the server to be checked
+
+## CLC_SaveReplay
+
+Type: `15`
+
+Client is sending a save replay request
+
+## CLC_CmdKeyValues
+
+Type: `16`
+
+???
+
+## CLC_FileMD5Check
+
+Type: `17`
+
+Client sends a files MD5 to the server to be checked
+
+## CLC_LASTMSG
+
+Type: `17`
+
+Last known client message
