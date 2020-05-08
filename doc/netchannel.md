@@ -33,7 +33,7 @@
 | Name            | Type        | Description                                   | Value    |
 |-----------------|-------------|-----------------------------------------------|----------|
 | Bit             | `3 bits`    | The bit to flip in reliable state (1 << this) | *Varies* |
-| SubChannel Data | *See below* | Data for a subchannel (Repeats x times)       | *Varies* |
+| SubChannel Data | *See below* | Data for a subchannel (Repeats 2 times)       | *Varies* |
 
 ##### SubChannel Data (Single Block)
 
