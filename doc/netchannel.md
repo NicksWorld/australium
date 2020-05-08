@@ -7,7 +7,7 @@
 | Sequence ack   | `long` | The sequence number acked                | *Varies*    |
 | Flags          | `byte` | A series of flags that change the header | *Varies*    |
 | Checksum       | `u16`  | A checksum of the message                | *See below* |
-| Reliable State | `byte` | Reliable state of 8 subchannels (Unused) | *Varies*    |
+| Reliable State | `byte` | Reliable state of 8 subchannels          | *Varies*    |
 
 ### Checksum
 
@@ -30,19 +30,19 @@
 #### `PACKET_FLAG_RELIABLE` = `1 << 0`
 ##### Reliable Data Structure
 
-| Name            | Type        | Description                                   | Value    |
-|-----------------|-------------|-----------------------------------------------|----------|
-| Bit             | `3 bits`    | The bit to flip in reliable state (1 << this) | *Varies* |
-| SubChannel Data | *See below* | Data for a subchannel (Repeats 2 times)       | *Varies* |
+| Name            | Type        | Description                                      | Value    |
+|-----------------|-------------|--------------------------------------------------|----------|
+| Bit             | `3 bits`    | The bit to flip in reliable state (1 << this)    | *Varies* |
+| SubChannel Data | *See below* | Data for a subchannel (Repeats 2 times)          | *Varies* |
 
 ##### SubChannel Data (Single Block)
 
 | Name              | Type                     | Description                                                                                     | Value                |
 |-------------------|--------------------------|-------------------------------------------------------------------------------------------------|----------------------|
-| Exists            | `bit`                    | If there is data to read for the subchannel (Determines if the rest of this structure is there) | *It is binary*       |
-| Single Block?     | `bit`                    | If the data is in a single block or multiple                                                    | `0` means **single** |
-| Compressed?       | `bit`                    | If the data is compressed                                                                       | *It is binary*       |
-| Uncompressed size | `26`                     | The uncompressed size of the data. **Only read if the packet is compressed**                    | *Varies*             |
+| Exists            | `1 bit`                  | If there is data to read for the subchannel (Determines if the rest of this structure is there) | *It is binary*       |
+| Single Block?     | `1 bit`                  | If the data is in a single block or multiple                                                    | `0` means **single** |
+| Compressed?       | `1 bit`                  | If the data is compressed                                                                       | *It is binary*       |
+| Uncompressed size | `26 bits`                | The uncompressed size of the data. **Only read if the packet is compressed**                    | *Varies*             |
 | Bytes             | `VarInt32`               | The size of the file.                                                                           | *Varies*             |
 | Data              | `bytes+(1 << 8)-1 bytes` | The data being sent.                                                                            | *Varies*             |
 
@@ -52,14 +52,14 @@
 | Name                | Type                     | Description                                                       | Value                         |
 |---------------------|--------------------------|-------------------------------------------------------------------|-------------------------------|
 | Single Block?       | `bit`                    | If the message is a single block                                  | `1` means **multiple blocks** |
-| Start Fragment      | `26 - 8`                 | The start fragment of the packet                                  | *Varies*                      |
+| Start Fragment      | `26 - 8 bits`            | The start fragment of the packet                                  | *Varies*                      |
 | Number of fragments | `3 bits`                 | The number of fragments in a packet.                              | *Varies*                      |
-| Is file?            | `bit`                    | If the message contains a file                                    | *Its binary*                  |
+| Is file?            | `1 bit`                  | If the message contains a file                                    | *Its binary*                  |
 | Transfer ID         | `u32`                    | The transfer ID of the file. **Only read if is a file**           | *Varies*                      |
 | Filename            | `string`                 | The filename of the file. **Only read if is a file**              | *Varies*                      |
-| Is compressed?      | `bit`                    | If the message is compressed.                                     | *Its binary*                  |
-| Uncompressed size   | `26`                     | The uncompressed size of the data. **Only read if is compressed** | *Varies*                      |
-| Bytes               | `26`                     | The size of the entire file in bytes.                             | *Varies*                      |
+| Is compressed?      | `1 bit`                  | If the message is compressed.                                     | *Its binary*                  |
+| Uncompressed size   | `26 bits`                | The uncompressed size of the data. **Only read if is compressed** | *Varies*                      |
+| Bytes               | `26 bits`                | The size of the entire file in bytes.                             | *Varies*                      |
 | Data                | `bytes+(1 << 8)-1 bytes` | The data being sent.                                              | *Varies*                      |
 
 ###### Following Blocks
@@ -67,6 +67,10 @@
 | Name                | Type                             | Description                          | Value                         |
 |---------------------|----------------------------------|--------------------------------------|-------------------------------|
 | Single Block?       | `bit`                            | If the message is a single block     | `1` means **multiple blocks** |
-| Start Fragment      | `26 - 8`                         | The start fragment of the packet     | *Varies*                      |
+| Start Fragment      | `26 - 8 bits`                    | The start fragment of the packet     | *Varies*                      |
 | Number of fragments | `3 bits`                         | The number of fragments in a packet. | *Varies*                      |
 | Data                | `Number of fragments * (1 << 8)` | The data being sent                  | *Varies*                      |
+
+## NetChannel Packet Body
+
+**TODO** Document additional messages and types (Similar to types of connectionless messages
