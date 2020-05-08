@@ -37,36 +37,36 @@
 
 ##### SubChannel Data (Single Block)
 
-| Name              | Type                          | Description                                                                                     | Value                |
-|-------------------|-------------------------------|-------------------------------------------------------------------------------------------------|----------------------|
-| Exists            | `bit`                         | If there is data to read for the subchannel (Determines if the rest of this structure is there) | *It is binary*       |
-| Single Block?     | `bit`                         | If the data is in a single block or multiple                                                    | `0` means **single** |
-| Compressed?       | `bit`                         | If the data is compressed                                                                       | *It is binary*       |
-| Uncompressed size | `MAX_FILE_SIZE_BITS`          | The uncompressed size of the data. **Only read if the packet is compressed**                    | *Varies*             |
-| Bytes             | `VarInt32`                    | The size of the file.                                                                           | *Varies*             |
-| Data              | `bytes+FRAGMENT_SIZE-1 bytes` | The data being sent.                                                                            | *Varies*             |
+| Name              | Type                     | Description                                                                                     | Value                |
+|-------------------|--------------------------|-------------------------------------------------------------------------------------------------|----------------------|
+| Exists            | `bit`                    | If there is data to read for the subchannel (Determines if the rest of this structure is there) | *It is binary*       |
+| Single Block?     | `bit`                    | If the data is in a single block or multiple                                                    | `0` means **single** |
+| Compressed?       | `bit`                    | If the data is compressed                                                                       | *It is binary*       |
+| Uncompressed size | `26`                     | The uncompressed size of the data. **Only read if the packet is compressed**                    | *Varies*             |
+| Bytes             | `VarInt32`               | The size of the file.                                                                           | *Varies*             |
+| Data              | `bytes+(1 << 8)-1 bytes` | The data being sent.                                                                            | *Varies*             |
 
 ##### SubChannel Data (Multi-Block)
 ###### First Block
 
-| Name                | Type                                 | Description                                                       | Value                         |
-|---------------------|--------------------------------------|-------------------------------------------------------------------|-------------------------------|
-| Single Block?       | `bit`                                | If the message is a single block                                  | `1` means **multiple blocks** |
-| Start Fragment      | `MAX_FILE_SIZE_BITS - FRAGMENT_BITS` | The start fragment of the packet                                  | *Varies*                      |
-| Number of fragments | `3 bits`                             | The number of fragments in a packet.                              | *Varies*                      |
-| Is file?            | `bit`                                | If the message contains a file                                    | *Its binary*                  |
-| Transfer ID         | `u32`                                | The transfer ID of the file. **Only read if is a file**           | *Varies*                      |
-| Filename            | `string`                             | The filename of the file. **Only read if is a file**              | *Varies*                      |
-| Is compressed?      | `bit`                                | If the message is compressed.                                     | *Its binary*                  |
-| Uncompressed size   | `MAX_FILE_SIZE_BITS`                 | The uncompressed size of the data. **Only read if is compressed** | *Varies*                      |
-| Bytes               | `MAX_FILE_SIZE_BITS`                 | The size of the entire file in bytes.                             | *Varies*                      |
-| Data                | `bytes+FRAGMENT_SIZE-1 bytes`        | The data being sent.                                              | *Varies*                      |
+| Name                | Type                     | Description                                                       | Value                         |
+|---------------------|--------------------------|-------------------------------------------------------------------|-------------------------------|
+| Single Block?       | `bit`                    | If the message is a single block                                  | `1` means **multiple blocks** |
+| Start Fragment      | `26 - 8`                 | The start fragment of the packet                                  | *Varies*                      |
+| Number of fragments | `3 bits`                 | The number of fragments in a packet.                              | *Varies*                      |
+| Is file?            | `bit`                    | If the message contains a file                                    | *Its binary*                  |
+| Transfer ID         | `u32`                    | The transfer ID of the file. **Only read if is a file**           | *Varies*                      |
+| Filename            | `string`                 | The filename of the file. **Only read if is a file**              | *Varies*                      |
+| Is compressed?      | `bit`                    | If the message is compressed.                                     | *Its binary*                  |
+| Uncompressed size   | `26`                     | The uncompressed size of the data. **Only read if is compressed** | *Varies*                      |
+| Bytes               | `26`                     | The size of the entire file in bytes.                             | *Varies*                      |
+| Data                | `bytes+(1 << 8)-1 bytes` | The data being sent.                                              | *Varies*                      |
 
 ###### Following Blocks
 
-| Name                | Type                                  | Description                          | Value                         |
-|---------------------|---------------------------------------|--------------------------------------|-------------------------------|
-| Single Block?       | `bit`                                 | If the message is a single block     | `1` means **multiple blocks** |
-| Start Fragment      | `MAX_FILE_SIZE_BITS - FRAGMENT_BITS`  | The start fragment of the packet     | *Varies*                      |
-| Number of fragments | `3 bits`                              | The number of fragments in a packet. | *Varies*                      |
-| Data                | `Number of fragments * FRAGMENT_SIZE` | The data being sent                  | *Varies*                      |
+| Name                | Type                             | Description                          | Value                         |
+|---------------------|----------------------------------|--------------------------------------|-------------------------------|
+| Single Block?       | `bit`                            | If the message is a single block     | `1` means **multiple blocks** |
+| Start Fragment      | `26 - 8`                         | The start fragment of the packet     | *Varies*                      |
+| Number of fragments | `3 bits`                         | The number of fragments in a packet. | *Varies*                      |
+| Data                | `Number of fragments * (1 << 8)` | The data being sent                  | *Varies*                      |
