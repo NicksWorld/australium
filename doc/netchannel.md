@@ -71,6 +71,33 @@
 | Number of fragments | `3 bits`                         | The number of fragments in a packet. | *Varies*                      |
 | Data                | `Number of fragments * (1 << 8)` | The data being sent                  | *Varies*                      |
 
-## NetChannel Packet Body
+## NetChannel Commands (Follow SubChannel Data)
 
-**TODO** Document additional messages and types (Similar to types of connectionless messages
+### Basic structure
+
+| Name    | Type     | Description                              | Value    |
+|---------|----------|------------------------------------------|----------|
+| Command | `6 bits` | The command being issued                 | *Varies* |
+| Data    | *Varies* | The command body, could be none or some. | *Varies* |
+
+#### NetChannel Commands
+
+##### Control Commands
+
+###### net_NOP = `0x00`
+
+This message has no body, it is padding
+
+###### net_Disconnect = `0x01`
+
+| Name   | Type     | Description               | Value    |
+|--------|----------|---------------------------|----------|
+| Reason | `string` | The reason for disconnect | *Varies* |
+
+###### net_File = `0x02`
+
+| Name        | Type     | Description                     | Value        |
+|-------------|----------|---------------------------------|--------------|
+| Transfer ID | `u32`    | The transfer ID of the file     | *Varies*     |
+| File name?  | `string` | The name of the file requested? | *Varies*     |
+| Deny?       | `bit`    | Denies the transfer if not 1    | *Its binary* |
